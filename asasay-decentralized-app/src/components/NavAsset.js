@@ -1,38 +1,19 @@
 import {Menu} from "antd";
 import asasayLogo from '../assets/asasayLogo.png';
-import { AppstoreOutlined, MailOutlined, SettingOutlined,UserOutlined  } from '@ant-design/icons';
+import { AppstoreOutlined, MailOutlined, SettingOutlined,UserOutlined,PlusOutlined  } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
 const items = [
     {
-      key: 'asasay',
-      icon: <Link to="/"><img src={asasayLogo} alt="file"  style={{ width: 160 }}/></Link>,
+      key: 'add-asset',
+      label: 'Add Assets',
+      icon: <Link to="/new-asset"><PlusOutlined /></Link>,
+      style:{float: 'right'},
     },
-    {
-      label:  <Link to="/profile">Profile</Link>,
-      key: 'profile',
-      icon: <UserOutlined />,
-      style:{float: 'right'},
-    }, 
-    {
-      label: 'Marketplace',
-      key: 'marketplace',
-      icon: <AppstoreOutlined />,
-      style:{float: 'right'},
-    }, 
-    {
-        label: (
-          <Link to="/your-asset">
-            Your Assets
-          </Link>
-        ),
-        key: 'alipay',
-        style:{float: 'right'},
-      },
     ];
 
-function TopNav(){
+function NavAsset(){
     const [current, setCurrent] = useState('mail');
 
     const onClick = (e) => {
@@ -63,4 +44,4 @@ function TopNav(){
       </Menu>
         )
 }
-export default TopNav;
+export default NavAsset;

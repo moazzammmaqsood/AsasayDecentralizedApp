@@ -2,7 +2,7 @@ import ArrayList from "./AssetList"
 import React, { useState } from 'react';
 import {Layout,Space, Menu} from "antd";
 import BcAsset from '../assets/BcAsset.png';
-import carAsset from '../assets/carAsset.jpg';
+import houseAsset from '../assets/houseAsset.jpg';
 import TopNav from "./TopNav"
 import CustomButton from './CustomButton';
 
@@ -36,7 +36,7 @@ return(
       <TopNav/>
     </header>
     <div className="mx-auto d-block">
-        <h1 style={{color:"#79C750"}}>New Car</h1>
+        <h1 style={{color:"#79C750"}}>New Real Estate</h1>
     </div>
     <Layout>
         <Content style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -62,19 +62,19 @@ return(
             <Form.Item label="Phone No">
                 <Input placeholder="+92XXXXXXXXXX" />
             </Form.Item>
-           <Form.Item label="Registeration Number">
-                <Input placeholder="Registeration Number" />
+           <Form.Item label="Address">
+                <Input placeholder="Address" />
             </Form.Item>
-            <Form.Item label="Model No">
-                <Input placeholder="Model No" />
+            <Form.Item label="City">
+                <Input placeholder="City" />
             </Form.Item>
-            <Form.Item label="Company">
-                <Input placeholder="Company" />
+            <Form.Item label="Size in Marla">
+                <Input placeholder="Size" />
             </Form.Item>
-            <Form.Item label="Number of wheels">
-                <Input placeholder="Number of wheels" />
+            <Form.Item label="Residential/Comercial">
+                <Input placeholder="r/c" />
             </Form.Item>
-            <Form.Item label="Engine no">
+            <Form.Item label="Number of Floors">
                 <Input placeholder="0" />
             </Form.Item>
             <Form.Item label="Witness 1 Cnic">
@@ -107,7 +107,7 @@ return(
     </Form>
     </div>
     <div style={{ flex:1}}>
-    <img src={carAsset} alt="Your Image" style={{ width: '100%', height: '100%' }} />
+    <img src={houseAsset} alt="Your Image" style={{ width: '100%', height: '100%' }} />
 
       </div>
     </Content>

@@ -8,6 +8,9 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React, { useState } from "react";  
 import NewAsset from './components/NewAsset';
+import NewCarAsset from './components/NewCarAsset'
+import Profile from './components/Profile';
+import YourAsset from './components/YourAsset';
 
 
 function App() {
@@ -21,9 +24,12 @@ function App() {
     <Routes>
     <Route path="/" element={<Marketplace/>}/>
     <Route path="/new-asset" element={<NewAsset/>}/>
-
+    <Route path="/new-car" element={<NewCarAsset/>}/>
+    <Route path="/profile" element={<Profile/>}/>
+    <Route path='/your-asset' element={<YourAsset/>}></Route>
       <Route path="/login" element={<LoginForm/>}/>
       <Route path="/signup" element={<SignupForm/>}>
+       
 
         {/* <Route index element={<Home />} /> */}
         {/* <Route path="blogs" element={<Blogs />} /> */}
