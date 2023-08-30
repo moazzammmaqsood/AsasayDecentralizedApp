@@ -18,7 +18,7 @@ const items = [
     {
       label: 'Marketplace',
       key: 'marketplace',
-      icon: <AppstoreOutlined />,
+      icon: <Link to="/"><AppstoreOutlined /></Link>,
       style:{float: 'right'},
     }, 
     {

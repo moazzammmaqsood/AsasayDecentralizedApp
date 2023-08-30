@@ -1,4 +1,4 @@
-import AssetList from "./AssetList"
+import ArrayList from "./AssetList"
 import React, { useState } from 'react';
 import {Layout,Space, Menu} from "antd";
 import BcAsset from '../assets/BcAsset.png';
@@ -38,7 +38,7 @@ return(
     <div className="mx-auto d-block">
         <h1 style={{color:"#79C750"}}>Your Profile</h1>
     </div>
-    {/* <Layout>
+    <Layout>
         <Content style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
         backgroundColor: "#fff" }}>
         <div style={{ flex: 2, margin: '10px' }}>
@@ -55,7 +55,7 @@ return(
 
       </div>
     </Content>
-    </Layout> */}
+    </Layout>
     </Layout>
     </Space>
 

@@ -1,4 +1,4 @@
-import ArrayList from "./AssetList"
+import AssetList from "./AssetList"
 import React, { useState } from 'react';
 import {Layout,Space, Menu} from "antd";
 import BcAsset from '../assets/BcAsset.png';
@@ -29,7 +29,7 @@ function Marketplace(){
       <TopNav/>
     </header>
     <CustomMenu/>
-    <ArrayList/>
+    <AssetList/>
     </Layout>
     </Space>
 );

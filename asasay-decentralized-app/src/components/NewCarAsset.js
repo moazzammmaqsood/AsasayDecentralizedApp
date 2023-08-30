@@ -1,4 +1,4 @@
-import ArrayList from "./AssetList"
+import AssetList from "./AssetList"
 import React, { useState } from 'react';
 import {Layout,Space, Menu} from "antd";
 import BcAsset from '../assets/BcAsset.png';
