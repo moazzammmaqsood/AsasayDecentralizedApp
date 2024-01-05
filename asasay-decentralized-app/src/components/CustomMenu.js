@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
 import { Menu,Layout } from 'antd';
 import CustomCrousel from './CustomCrousel';
 import { icons } from 'antd/es/image/PreviewGroup';
+// import  from 'react';
+
 const { Header, Footer, Sider, Content } = Layout;
 
 function getItem(label, key, icon, children, type) {
@@ -35,16 +37,19 @@ const items = [
         
 
     },
-  getItem('Real Estate', 'sub1', ),
-  getItem('Cars', 'sub2', ),
-  getItem('Shops', 'sub4',),
-  getItem('Others', 'sub4',),
+  getItem('Real Estate', 'Real Estate', ),
+  getItem('Cars', 'Car', ),
+  getItem('Coming Soon', 'Coming Soon',),
+  getItem('', '',),
 
 ];
-const onClick = (e) => {
-  console.log('click', e);
-};
-function CustomMenu(){
+
+function CustomMenu(props){
+  
+  const onClick = (e) => {
+    console.log('click', e.key.toString());
+    props.onSelectionUpdate(e.key.toString());
+  };
     return(
         <Layout hasSider>
         <Sider style={siderStyle}>

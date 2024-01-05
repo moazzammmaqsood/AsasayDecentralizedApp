@@ -4,22 +4,21 @@ import {Layout,Space, Menu} from "antd";
 import TopNav from "./TopNav"
 import NavAsset from "./NavAsset"
 import CustomMenu from "./CustomMenu";
-const headerStyle = {
-    textAlign: 'center',
-    color: '#fff',
-    height: 64,
-    paddingInline: 50,
-    lineHeight: '64px',
-    backgroundColor: '#7dbcea',
-  };
+import { Content } from "antd/es/layout/layout";
+
   const { Header } = Layout;
  
 function YourAsset(){ 
+
+  
+  const[menu,setMenu]=useState("all");
+  console.log('menu',menu);
     return(
     <Space
     direction="Horizontal"
     style={{
         width: '100%',
+        display: 'block'
     }}
     size={[0, 48]}
     >
@@ -28,8 +27,8 @@ function YourAsset(){
       <TopNav/>
       <NavAsset/>
     </header>
-    <CustomMenu/>
-    <YourAssetList/>
+    <CustomMenu onSelectionUpdate={setMenu}/>
+    <YourAssetList menu={menu}/>
     </Layout>
     </Space>
 );

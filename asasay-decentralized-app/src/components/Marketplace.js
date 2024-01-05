@@ -1,10 +1,12 @@
 import AssetList from "./AssetList"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {Layout,Space, Menu} from "antd";
 import BcAsset from '../assets/BcAsset.png';
 import asasayLogo from '../assets/asasayLogo.png';
 import TopNav from "./TopNav"
 import CustomMenu from "./CustomMenu";
+import { ReactSession } from 'react-client-session';
+
 const headerStyle = {
     textAlign: 'center',
     color: '#fff',
@@ -16,6 +18,23 @@ const headerStyle = {
   const { Header } = Layout;
  
 function Marketplace(){ 
+  const[menu,setMenu]=useState('all');
+  console.log('menu',menu);
+  var token;
+
+  // function onSelectionUpdate(data){
+  //   console.log('onSelectionUpdate',data);
+  // }
+  useEffect(()=>{
+ token= localStorage.getItem("token");  
+ if(!token){
+  window.location.href ="/login"
+}// Returns "Bob"
+
+  console.log("token",token)
+  },[token]);
+ 
+
     return(
     <Space
     direction="vertical"
@@ -28,8 +47,8 @@ function Marketplace(){
         <header>
       <TopNav/>
     </header>
-    <CustomMenu/>
-    <AssetList/>
+    <CustomMenu onSelectionUpdate={setMenu}/>
+    <AssetList menu={menu} />
     </Layout>
     </Space>
 );

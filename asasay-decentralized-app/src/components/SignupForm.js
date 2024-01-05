@@ -4,10 +4,25 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import BcAsset from '../assets/BcAsset.png';
 import asasayLogo from '../assets/asasayLogo.png';
 import CustomButton from './CustomButton';
+import axios from 'axios';
+import { ReactSession } from 'react-client-session';
 
 
 const onFinish = (values) => {
     console.log('Success:', values);
+    axios.post("http://localhost:8080/api/v1/public/auth/signup",
+    {"cnic":values.cnic,
+    "name":values.name,
+    "password":values.password,
+    "email":values.email,
+    "address":values.address})
+    .then(function (response) {
+        console.log(response);
+        window.location.href ="/"
+      })
+    .catch((error)=>{
+        console.log("error",error)
+    })
   };
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
@@ -15,6 +30,7 @@ const onFinish = (values) => {
   
 function SignupForm(){
     const primaryColor = "#79C750";
+
 
     return(<>
      <div className="container-fluid " style={{ minHeight: "100vh" }}>
@@ -38,7 +54,7 @@ function SignupForm(){
                     <Form className='mt-4'
                         name="basic"
                         labelCol={{
-                        span: 8,
+                        span: 10,
                         }}
                         wrapperCol={{
                         span: 16,
@@ -100,6 +116,18 @@ function SignupForm(){
                         ]}
                         >
                         <Input.Password />
+                        </Form.Item>
+                        <Form.Item
+                        label="Enter your Blockchain Wallet"
+                        name="address"
+                        rules={[
+                            {
+                            required: true,
+                            message: 'Please input your Blockchain Wallet!',
+                            },
+                        ]}
+                        >
+                        <Input />
                         </Form.Item>
 
                         <Form.Item

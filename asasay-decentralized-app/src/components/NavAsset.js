@@ -4,17 +4,24 @@ import { AppstoreOutlined, MailOutlined, SettingOutlined,UserOutlined,PlusOutlin
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
-const items = [
-    {
-      key: 'add-asset',
-      label: 'Add Assets',
-      icon: <Link to="/new-asset"><PlusOutlined /></Link>,
-      style:{float: 'right'},
-    },
-    ];
+
 
 function NavAsset(){
     const [current, setCurrent] = useState('mail');
+    const items = [
+      {
+        key: 'add-asset',
+        label: 'Add Assets',
+        icon: <Link to="/new-asset"><PlusOutlined /></Link>,
+        style:{float: 'right'},
+      },
+      {
+        key: 'add-car',
+        label: 'Add Cars',
+        icon: <Link to="/new-car"><PlusOutlined /></Link>,
+        style:{float: 'right'},
+      },
+      ];
 
     const onClick = (e) => {
         console.log('click ', e);

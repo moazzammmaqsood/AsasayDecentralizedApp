@@ -1,7 +1,27 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
-import React from 'react';
+import React,{ useEffect, useState } from 'react';
 import { Avatar, Card, List, Space, Icon } from 'antd';
 import Link from 'antd/es/typography/Link';
+import {fetchAssetDetailMarketplace} from "../contracts/AssetsService";
+
+
+function getDescription(data){
+  if(data?.assetType === 'Real Estate'){
+    return 'Address: '+data?.realEstate?._address +
+    ', Floor: '+data?.realEstate?.noOfFloors +
+    ', \nSize: '+ data?.realEstate?.size + 
+    ', Type: '+ data?.realEstate?.realEstateType  ;
+
+  }else if(data?.assetType === 'Car'){
+    return 'Registration No: '+data?.car?.registerationNo +
+    ', Model No: '+data?.car?.modelNo +
+    ', Company: '+ data?.car?.company + 
+    ', Engine No: '+ data?.car?.engineNo  ;
+
+  }
+
+
+}
 const data = Array.from({
   length: 4,
 }).map((_, i) => ({
@@ -34,22 +54,67 @@ function generateRandomValueInMillions() {
   return randomValue;
 }
 
-function AssetList(){
-    console.log('dd')
-    var arrHouseImage=['https://plus.unsplash.com/premium_photo-1682377521625-c656fc1ff3e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-  'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80',
-'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-'https://plus.unsplash.com/premium_photo-1661954372617-15780178eb2e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2060&q=80']
-  var arrHouseDesc=['A cozy retreat with two bedrooms, two baths, and a spacious drawing and dining area for your family\'s comfort',
-'Experience luxury living in our three-bedroom villa, complete with three baths, and a grand drawing and dining space for elegant gatherings.',
-'Perfect for a couples getaway, our one-bedroom villa offers a serene escape with a private bath and an intimate drawing and dining area',
-'Gather with friends and family in style in our four-bedroom villa, featuring four baths and an expansive drawing and dining area for your special occasions.']
-var i=0;  
+function AssetList({menu}){
+   var i=0;  
+const[list,setList]=useState([])
+const[data,setdata]=useState([])
 
-data.map((obj) => (
-    obj.description=arrHouseDesc[i],
-    obj.cover=arrHouseImage[i++],
-    obj.title='PKR '+generateRandomValueInMillions()))
+   useEffect(()=>{    
+     var  assets=  fetchAssetDetailMarketplace();
+    assets.then((e)=>{
+    var newList=[]
+    e.forEach(element => {
+      if(menu==='all' && element.assetType!=='' && element.sell){
+        var asset ={
+          "assetId":element.assetId,
+           "assetType":element.assetType,
+           "cnic":element.cnic,
+           "ownerName":element.currentOwner, 
+           "realEstate":element.realEstate,
+           "value":element.value,
+           "templateUrl":element.templateUrl,
+           "car":element.car
+         }
+         newList.push(asset);
+      }
+     else if(element.assetType!=='' && element.sell && element.assetType === menu ){
+      var asset ={
+        "assetId":element.assetId,
+         "assetType":element.assetType,
+         "cnic":element.cnic,
+         "ownerName":element.currentOwner, 
+         "realEstate":element.realEstate,
+         "value":element.value,
+         "templateUrl":element.templateUrl,
+         "car":element.car
+       }
+       newList.push(asset);
+      }
+      });
+      
+      setList(newList);
+      var newData=[]      
+      newList.forEach((e)=>{
+      const obj ={  
+        href: "/asset-detail/"+e.assetId,
+        title: e.value+' ETH',
+        assetId: e.assetId,
+        // avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
+        description: getDescription(e),
+        content: e.realEstate._address+'\n'+e.realEstate?.floor,
+        cover:e.templateUrl,
+      }
+      newData.push(obj)
+      })
+      setdata(newData);
+      
+});
+},[menu]);
+
+// data.map((obj) => (
+//     obj.description=arrHouseDesc[i],
+//     obj.cover=arrHouseImage[i++],
+//     obj.title='PKR '+generateRandomValueInMillions()))
     return(
     <List
     grid={{ gutter: 16, column: 4 }}

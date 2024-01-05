@@ -1,16 +1,39 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
-import React from 'react';
-import { Avatar, Card, List, Space, Icon } from 'antd';
-const data = Array.from({
-  length: 4,
-}).map((_, i) => ({
-  href: 'https://ant.design',
-  title: `ant design part ${i}`,
-  avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
-  description:'',
-  content:'',
-  cover:'',
-}));
+import React, { useEffect, useState } from 'react';
+import { Avatar, Card, List, Space, Icon } from 'antd'; 
+import {fetchAllAssetDetail,fetchAssetDetailById} from "../contracts/AssetsService"
+import Link from 'antd/es/typography/Link';
+
+
+// const web3 = new Web3(new Web3.providers.HttpProvider("HTTP://127.0.0.1:7545"));
+// web3.eth.defaultAccount = web3.eth.accounts[0];
+
+// const RemixContract = new web3.eth.Contract(
+//   ContractABI,
+//   "0x69B635941391083de97B5549433f97B017b17176"
+// )
+
+// async function getAssets() {
+//   // const gas = await RemixContract.methods.getAllAssets("0xf6F166d90bB358769170d3202E4437dE0a0C1f27").estimateGas();
+//   const result = await RemixContract.methods
+//     .getAllAssets('0xD7B7Adb7ba2362AD62AE57625Fba69c9EAA798ee').call();
+
+//     // .send({ from: "0x34C2458A53772Be166A7c0E02da9828f158140d0", gas })
+    
+//   return result
+// };
+
+
+// const data = Array.from({
+//   length: 4,
+// }).map((_, i) => ({
+//   href: 'https://ant.design',
+//   title: `ant design part ${i}`,
+//   avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
+//   description:'',
+//   content:'',
+//   cover:'',
+// }));
 const IconText = ({ icon, text }) => (
   <Space>
     {React.createElement(icon)}
@@ -31,34 +54,103 @@ function generateRandomValueInMillions() {
   return randomValue;
 }
 
+function getDescription(data){
+  
+  if(data?.assetType === 'Real Estate'){
+    return 'Address: '+data?.realEstate?._address +
+    ', Floor: '+data?.realEstate?.noOfFloors +
+    ', \nSize: '+ data?.realEstate?.size + 
+    ', Type: '+ data?.realEstate?.realEstateType  ;
 
-function YourAssetList(){
-  var arrHouseImage=['https://plus.unsplash.com/premium_photo-1682377521625-c656fc1ff3e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-  'https://images.unsplash.com/photo-1505843513577-22bb7d21e455?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80',
-'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-'https://plus.unsplash.com/premium_photo-1661954372617-15780178eb2e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2060&q=80']
-  var arrHouseDesc=['A cozy retreat with two bedrooms, two baths, and a spacious drawing and dining area for your family\'s comfort',
-'Experience luxury living in our three-bedroom villa, complete with three baths, and a grand drawing and dining space for elegant gatherings.',
-'Perfect for a couples getaway, our one-bedroom villa offers a serene escape with a private bath and an intimate drawing and dining area',
-'Gather with friends and family in style in our four-bedroom villa, featuring four baths and an expansive drawing and dining area for your special occasions.']
-var i=0;  
+  }else if(data?.assetType === 'Car'){
+    return 'Registration No: '+data?.car?.registerationNo +
+    ', Model No: '+data?.car?.modelNo +
+    ', Company: '+ data?.car?.company + 
+    ', Engine No: '+ data?.car?.engineNo  ;
 
-data.map((obj) => (
-    obj.description=arrHouseDesc[i],
-    obj.cover=arrHouseImage[i++],
-    obj.title='PKR '+generateRandomValueInMillions()))
-    console.log('dd')
+  }
+
+
+}
+function YourAssetList({menu}){
+  const[list,setList]=useState([])
+  const[data,setdata]=useState([])
+  var assetId ='1';
+
+     useEffect(()=>{    
+      var address=localStorage.getItem("address");
+       var  assets=  fetchAllAssetDetail(address);
+
+       console.log("assets",assets)
+     assets.then((e)=>{
+      console.log("eee-->",e);
+      var newList=[]
+      e.forEach(element => {
+        console.log('testtt',element.assetType);
+        if(menu==='all' && element.assetType!==''){
+          console.log('all');
+
+        var asset ={
+          "assetId":element.assetId,
+           "assetType":element.assetType,
+           "cnic":element.cnic,
+           "ownerName":element.currentOwner, 
+           "realEstate":element.realEstate,
+           "value":element.value,
+           "templateUrl":element.templateUrl,
+           "car":element.car
+         }
+         newList.push(asset);
+        }
+         else if(element.assetType!=='' && element.assetType === menu){
+          console.log('type--', menu);
+
+          var asset ={
+            "assetId":element.assetId,
+             "assetType":element.assetType,
+             "cnic":element.cnic,
+             "ownerName":element.currentOwner, 
+             "realEstate":element.realEstate,
+             "value":element.value,
+             "templateUrl":element.templateUrl,
+             "car":element.car
+           }
+           newList.push(asset);
+         }
+        });
+        
+        setList(newList);
+        console.log("listxxx",newList);
+        var newData=[]      
+        newList.forEach((e)=>{
+        const obj ={  
+          href: e.templateUrl,
+          title: e.value+' ETH',
+          assetId: e.assetId,
+          // avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
+          description: getDescription(e),
+          content: e.realEstate._address+'\n'+e.realEstate?.floor,
+          cover:e.templateUrl,
+        }
+        newData.push(obj)
+        })
+        setdata(newData);
+        
+  });
+},[menu]);
+
     return(
     <List
-    grid={{ gutter: 4, column: 1 }}
+    grid={{ gutter: 1, column: 1 }}
     size="large"
     style={{backgroundColor:"#ffff",
-          margin:"20px"}}
+          margin:"20px",
+        display: "inline",}}
     pagination={{
       onChange: (page) => {
         console.log(page);
       },
-      pageSize:20,
+      pageSize:10,
     }}
     dataSource={data}
     renderItem={(item) => (
@@ -66,7 +158,7 @@ data.map((obj) => (
         key={item.title}
       >
        <Card>
-        <div style={{ display: 'flex' }}>
+        <div style={{ width: '100%',display: 'flex' }}>
           {/* Left side: Cover image */}
           <img
             src={item.cover}
@@ -76,7 +168,7 @@ data.map((obj) => (
 
           {/* Right side: Title and Description */}
           <div style={{ marginLeft: 16 }}>
-            <Card.Meta title={<a href='/asset-detail'>{item.title}</a>} description={item.description} />
+            <Card.Meta title={<a href={'/asset-detail/'+item.assetId}>{item.title}</a>} description={item.description} />
           </div>
         </div>
       </Card>

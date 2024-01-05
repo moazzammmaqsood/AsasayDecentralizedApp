@@ -5,6 +5,8 @@ import BcAsset from '../assets/BcAsset.png';
 import carAsset from '../assets/carAsset.jpg';
 import TopNav from "./TopNav"
 import CustomButton from './CustomButton';
+import axios from 'axios'
+import {createCar} from '../contracts/AssetsService'
 
  import { PlusOutlined } from '@ant-design/icons';
 import { 
@@ -15,13 +17,76 @@ import {
   } from 'antd';    
   const {  Content } = Layout;
 
-function NewAsset(){
+function NewCarAsset(){
+  const [defaultFileList, setDefaultFileList] = useState([]);
+  const [imagesUrl,setImageUrl]=useState('');
+  const [progress, setProgress] = useState(0);
+  const [spin, setIsSpin]=useState(false);
+  const uploadImage = async options => {
+    const { onSuccess, onError, file, onProgress } = options;
+    const fmData = new FormData();
+    const config = {
+      headers: { "content-type": "multipart/form-data" ,
+      "Authorization":"Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhYmVlci56ZWhyYTkyQGdtYWlsLmNvbSIsImV4cCI6MTkxODE0NjcwNn0.C6YLpB9XTCIUchxYs1BJdFcmcFc3H1IMVRVcKDW5f7E"},
+      onUploadProgress: event => {
+        const percent = Math.floor((event.loaded / event.total) * 100);
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => setProgress(0), 1000);
+        }
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      }
+    };
+    fmData.append("file", file);
+    fmData.append("assetId", 2);
+    try {
+      const res = await axios.post(
+        "/file-upload",
+        fmData,
+        config
+      );
+
+      onSuccess("Ok");
+      console.log("server res: ", res);
+      setImageUrl(res?.data);
+
+    } catch (err) {
+      console.log("Eroor: ", err);
+      const error = new Error("Some error");
+      onError({ err });
+    }
+  };
+
+
+
     const normFile = (e) => {
         if (Array.isArray(e)) {
           return e;
         }
         return e?.fileList;
       };
+
+
+      const onFinish=(e)=>{
+
+        e._templateUrl=imagesUrl;
+        console.log('url=',e._templateUrl)
+        // uploadFunc(e.fileList)
+         setIsSpin(true);
+         createCar(e).then(()=>{
+          setIsSpin(false);
+          window.location.href ="/your-asset"
+         });
+       
+        }
+      const handleOnChange = ({ file, fileList, event }) => {
+        // console.log(file, fileList, event);
+        //Using Hooks to update the state to the current filelist
+        setDefaultFileList(fileList);
+        //filelist - [{uid: "-1",url:'Some url to image'}]
+      };
+    
+
 return(
 
     <Space
@@ -43,6 +108,7 @@ return(
         backgroundColor: "#fff" }}>
         <div style={{ flex: 2, margin: '20px' }}>
     <Form
+        onFinish={onFinish}
         labelCol={{
           span: 5,
         }}
@@ -51,41 +117,34 @@ return(
         }}
         layout="horizontal"
       >
-  
-           
-           <Form.Item label="Owner Name">
-                <Input placeholder="Full Name" />
-            </Form.Item>
-            <Form.Item label="CNIC">
-                <Input placeholder="Cnic" />
-            </Form.Item>
-            <Form.Item label="Phone No">
-                <Input placeholder="+92XXXXXXXXXX" />
-            </Form.Item>
-           <Form.Item label="Registeration Number">
+
+           <Form.Item label="Registeration Number" name="_registerationNo">
                 <Input placeholder="Registeration Number" />
             </Form.Item>
-            <Form.Item label="Model No">
+            <Form.Item label="Model No" name="_modelNo">
                 <Input placeholder="Model No" />
             </Form.Item>
-            <Form.Item label="Company">
+            <Form.Item label="Company" name="_company">
                 <Input placeholder="Company" />
             </Form.Item>
-            <Form.Item label="Number of wheels">
+            <Form.Item label="Number of wheels" name="_wheels">
                 <Input placeholder="Number of wheels" />
             </Form.Item>
-            <Form.Item label="Engine no">
+            <Form.Item label="Engine no" name="_engineNo">
                 <Input placeholder="0" />
             </Form.Item>
-            <Form.Item label="Witness 1 Cnic">
-                <Input placeholder="xxxxxx-xxxxxxxx-x" />
+            <Form.Item label="Value in ETH" name="_value">
+                <Input placeholder="Value in ETH" />
             </Form.Item>
-            <Form.Item label="Witness 2 Cnic">
-                <Input placeholder="xxxxxx-xxxxxxxx-x" />
-            </Form.Item>
-             <Form.Item label="Upload" valuePropName="fileList" getValueFromEvent={normFile} 
+            <Form.Item label="Upload" valuePropName="fileList" getValueFromEvent={normFile} 
                   className="d-flex flex-column align-items-left"  labelCol={{span:0,offset:5}} >
-          <Upload action="/upload.do" listType="picture-card">
+          <Upload
+           accept="image/*"
+           customRequest={uploadImage}
+           onChange={handleOnChange}
+           listType="picture-card"
+           defaultFileList={defaultFileList}
+          action="/upload.do">
             <div>
               <PlusOutlined />
               <div
@@ -120,4 +179,4 @@ return(
 
 }
 
-export default NewAsset
+export default NewCarAsset

@@ -1,0 +1,150 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity ^0.8.0;
+
+contract Assets {
+
+    uint256 assetId;
+    mapping(uint256 => Asset) public assets;
+ 
+
+    struct Asset{
+        uint256 assetId;
+        string assetType;
+        string cnic;
+        string templateUrl;
+        string value;
+        address currentOwner;
+        address[] prevOwner;
+        RealEstate realEstate;
+        bool sell;
+        Car car;
+    }
+
+    struct RealEstate{
+        string _address;
+        string size;
+        string realEstateType;
+        uint8 noOfFloors;
+    }
+
+    struct Car{
+        string registerationNo;
+        string modelNo;
+        string company;
+        uint8 wheels;
+        string engineNo;
+
+    }
+
+
+    function createRealAssets(
+    string memory _realEstateType,
+    string memory _cnic,
+    string memory _addr,
+    string memory _size,
+    string memory _templateUrl,
+    string memory _value,
+    uint8 _floors) public {
+        address ownAddres= msg.sender;
+        // profileName[ownAddres]=_ownerName;
+        // string[] memory _owners;
+        // _owners[0]=_ownerName;
+        address[] memory _prevOwner;
+        RealEstate memory _realEstate= RealEstate({
+            _address :_addr,
+            size:_size,
+            realEstateType:_realEstateType,
+            noOfFloors:_floors
+        });
+        Car memory _car=Car({
+         registerationNo: "",
+         modelNo:"",
+         company:"",
+         wheels:0,
+         engineNo:""
+        });
+        uint256 _assetId=assetId++;
+       assets[_assetId]= Asset(_assetId,"Real Estate",_cnic,_templateUrl,_value,ownAddres,_prevOwner,_realEstate,false,_car);
+        // assets[_assetId].prevOwner.push(_ownerName);
+    }
+
+    function createCarAssets(
+    string memory _cnic, 
+    string memory _modelNo,
+    string memory _company,
+    string memory _registerationNo,
+    string memory _templateUrl,
+    string memory _value,
+    uint8 _wheels,
+    string memory _engineNo) public {
+         RealEstate memory _realEstate= RealEstate({
+            _address :"",
+            size:"",
+            realEstateType:"",
+            noOfFloors:0
+        });
+        Car memory _car=Car({
+            registerationNo:_registerationNo,
+         modelNo:_modelNo,
+         company:_company,
+         wheels:_wheels,
+         engineNo:_engineNo
+        });
+        address[] memory _prevOwner;
+        uint256 _assetId=assetId++;
+        // assets[_assetId]= Asset(_assetId,"Real Estate",_ownerName,_cnic,_templateUrl,_value,ownAddres,_prevOwner,_realEstate,false,_car);
+        assets[_assetId]= Asset(_assetId,"Car",_cnic,_templateUrl,_value,msg.sender,_prevOwner,_realEstate,false,_car);
+        // assets[_assetId].prevOwner.push(_ownerName);
+
+    }
+
+    function getAssets(uint _assetId) public view returns (Asset memory){
+        return assets[_assetId];
+        // revert('Not found');
+    }
+    function getAssetId() public  view returns (uint256){
+        return assetId;
+    }
+
+     function getAllAssets(address  _address) public view returns (Asset[] memory){
+        Asset[] memory result=new Asset[](assetId);
+          uint j=0;
+        for(uint i = 0 ; i < assetId;i++){
+                if(assets[i].currentOwner==_address){
+                // Asset storage asst=assets[i]();
+                 result[j]=assets[i];
+                 j++;
+                 }
+        }
+
+         return result;
+ }
+
+ 
+     function getAllAssetsMarketplace() public view returns (Asset[] memory){
+        Asset[] memory result=new Asset[](assetId);
+        uint j=0;
+        for(uint i = 0 ; i < assetId;i++){
+                 result[j]=assets[i];
+                 j++;
+        }
+        return result;
+    }
+
+    function transfer(address _transferTo,uint256 _assetId) public  returns (string  memory){
+            // require(assets[_assetId].currentOwner == msg.sender,"Only owner can transfer");
+             assets[_assetId].prevOwner.push(assets[_assetId].currentOwner);
+            assets[_assetId].currentOwner=_transferTo;
+            return "success";
+    }
+
+    
+    function sellAsset(uint256 _assetId,bool isSell) public  returns (string  memory){
+            // require(assets[_assetId].currentOwner == msg.sender,"Only owner update");
+            assets[_assetId].sell=isSell;
+            return "success";
+    }
+        
+
+}

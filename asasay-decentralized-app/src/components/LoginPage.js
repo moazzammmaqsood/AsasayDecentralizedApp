@@ -4,19 +4,38 @@ import asasayLogo from '../assets/asasayLogo.png';
 import { Button, Checkbox, Form, Input } from 'antd';
 import CustomButton from './CustomButton';
 import { Outlet, Link } from "react-router-dom";
-
-const onFinish = (values) => {
-    console.log('Success:', values);
-    window.location.href ="/"
-    
-  };
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
-  
-
+import axios from 'axios';
+import { ReactSession } from 'react-client-session';
+axios.defaults.baseURL = 'http://localhost:8080';
 
 function LoginForm() {
+
+
+   const onFinish = (values) => {
+        console.log('Success:', values);
+        axios.post("/api/v1/public/auth/login",{
+            "emailAddress":values.email,
+            "password": values.password
+        }).then(function (response) {
+            console.log(response);
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("address", response.data.address);
+    
+            // this.props.history.push("/");
+    
+            window.location.href ="/"
+    
+          }
+          ).catch((error)=>{
+            console.log(error)
+            alert(error.response?.data?.errorDescriprtion)
+        })
+        
+      };
+      const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+      };
+
     const primaryColor = "#79C750";
     return (
         <div className="container-fluid " style={{ minHeight: "100vh" }}>
@@ -99,10 +118,14 @@ function LoginForm() {
                         }}
                         >
                         <Checkbox>Remember me</Checkbox>
-                        <Link className='mx-4' to="/signup">Forgot Password?</Link>
                         </Form.Item>
                        
                     </Form>
+                    <div >
+                        <p className="mx-5 my-5">
+                            New Account ? <Link to="/signup">Sign Up</Link>
+                        </p>
+                    </div>
                  <div>
                   </div>
                   <div className='col-md-6 text-white'>
